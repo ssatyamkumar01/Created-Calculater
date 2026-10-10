@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="calculater.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calci</title>
+  </head>
+  <body>
+    <div class="calculater">
+      <input type="text" placeholder="0" />
+      <div class="buttons">
+        <button>AC</button>
+        <button>DEL</button>
+        <button class="opt">%</button>
+        <button class="opt">/</button>
+      </div>
+      <div class="buttons">
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="opt">*</button>
+      </div>
+      <div class="buttons">
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="opt">-</button>
+      </div>
+      <div class="buttons">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="opt">+</button>
+      </div>
+      <div class="buttons">
+        <button>00</button>
+        <button>0</button>
+        <button>.</button>
+        <button class="opt">=</button>
+      </div>
+    </div>
+    <script>
+        
+const display = document.querySelector("input");
+const buttons = document.querySelectorAll("button");
+
+let expression = "";
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const value = button.textContent;
+
+    if (value === "AC") {
+      expression = "";
+      display.value = "";
+    } 
+    else if (value === "DEL") {
+      expression = expression.slice(0, -1);
+      display.value = expression;
+    } 
+    else if (value === "=") {
+      try {
+        if (!expression || !/^[0-9+\-*/%.()\s]+$/.test(expression)) {
+          throw new Error("Invalid expression");
+        }
+
+        const result = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(result)) {
+          throw new Error("Invalid result");
+        }
+
+        expression = String(result);
+        display.value = expression;
+      } catch {
+        display.value = "Error";
+        expression = "";
+      }
+    } 
+    else {
+      expression += value;
+      display.value = expression;
+    }
+  });
+});
+    </script>
+  </body>
+</html>
